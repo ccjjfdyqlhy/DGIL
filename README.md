@@ -1,2 +1,4 @@
-# DGIL
-A self-made launcher for the game Genshin Impact.
+# DGIL (Darkstar Genshin Impact Launcher)  
+这是一个给原神(Genshin Impact)的非官方启动器。  
+众所周知，这个游戏的官方启动器实在是太逊了，下载限速只有几M，因此我使用python编写了这个不限速启动器。  
+现在已经支持下载大陆服和国际服两种服务器的3.1版本客户端，未来可能会加入解包加密游戏素材，以及“裸运行（指不经过编译就直接运行）的功能。
