@@ -10,26 +10,18 @@ import zipfile
 import requests
 import subprocess
 import time
-import pywintypes
-import win32api
-import win32con
 
-ver='0.3'
+ver='1.0'
 cwd=os.getcwd()
-
-def on_closing():
-    win32api.RegCloseKey(regeditKey)
-    root.destroy()
 
 root=Tk()
 root.title('DGIL '+ver)
 root.geometry('800x400')
 root.resizable(False,False)
-root.protocol("WM_DELETE_WINDOW", on_closing)
 
 global url
 global inurl
-byte=5242880
+byte=678700000
 
 notebook = tkinter.ttk.Notebook(root)
 starttab = tkinter.Frame()
@@ -40,20 +32,6 @@ notebook.add(downloadtab,text='   下载   ')
 notebook.add(setuptab,text='   选项   ')
 notebook.pack(padx=80, pady=40, fill=tkinter.BOTH, expand=True)
 
-try:
-    screenWidth = win32api.GetSystemMetrics(0)
-    screenHeight = win32api.GetSystemMetrics(1)
-    regeditKey = win32api.RegOpenKey(
-        win32con.HKEY_CURRENT_USER, r'Software\miHoYo\原神', 0, win32con.KEY_ALL_ACCESS)
-    regHeight = win32api.RegQueryValueEx(
-        regeditKey, 'Screenmanager Resolution Height_h2627697771')[0]
-    regWidth = win32api.RegQueryValueEx(
-        regeditKey, 'Screenmanager Resolution Width_h182942802')[0]
-    regFullScreen = win32api.RegQueryValueEx(
-        regeditKey, 'Screenmanager Is Fullscreen mode_h3981298716')[0]
-except:
-    exit(1)
-
 def check(context):
     if context.isdigit() or context == "":
         return True
@@ -63,9 +41,14 @@ def show():
     if xVariable.get() == 'YuanShen 3.1.0':
         inurl.insert(0,'https://autopatchcn.yuanshen.com/client_app/download/pc_zip/20220917165328_rVH9t4OWduSD75ye/YuanShen_3.1.0.zip')
         known_size=406846502.4
+    elif xVariable.get() == 'YuanShen 3.2.0':
+        inurl.insert(0,'https://autopatchcn.yuanshen.com/client_app/download/pc_zip/20221024103540_fp3L3cHoDpo9eNeT/YuanShen_3.2.0.zip')
+        known_size=407000000
+    elif xVariable.get() == 'YuanShen 3.0.0':
+        inurl.insert(0,'https://autopatchcn.yuanshen.com/client_app/download/pc_zip/20220815143702_i3RDKzdbDWGYYfZZ/YuanShen_3.0.0.zip')
+        known_size=407000000
     else:
-        inurl.insert(0,'https://autopatchhk.yuanshen.com/client_app/download/pc_zip/20220917165430_NyMmj1Ta9KlZKgCZ/GenshinImpact_3.1.0.zip')
-        known_size=4068693948.8
+        print('[ERROR]Variable not definded')
     url=inurl.get()
     getgamebutton["state"]="disabled"
     r = requests.get(url, stream = True)
@@ -92,17 +75,18 @@ def decompiled():
     print('='*20+'UNPACKING'+'='*20)
     try:
         unpack('./main.dspck')
-        showinfo('DGIL - 提示','主要文件解包成功！')
-        print('3.1语音包下载:[]')
+        showinfo('DGIL - 提示','主要文件解包成功！你的游戏已经可以直接启动。\n如果想手动下载语音包，请使用终端中的链接。')
+        print('语音包下载:\n3.2:[https://autopatchcn.yuanshen.com/client_app/download/pc_zip/20221024103540_fp3L3cHoDpo9eNeT/Audio_Chinese_3.2.0.zip]\n3.1:[https://autopatchcn.yuanshen.com/client_app/download/pc_zip/20220917165328_rVH9t4OWduSD75ye/Audio_Chinese_3.1.0.zip]\n3.0:[https://autopatchcn.yuanshen.com/client_app/download/pc_zip/20220815143702_i3RDKzdbDWGYYfZZ/Audio_Chinese_3.0.0.zip]')
     except:
-        showwarning('DGIL - 警告','找不到文件.\n前往下载选项卡下载特定安装包或使用官方启动器安装！')
+        showwarning('DGIL - 警告','找不到文件.\n前往下载选项卡下载安装包！')
 def decompiledaudio():
-    print('='*20+'UNPACKING'+'='*20)
+    print('='*20+'解压中，切勿关闭程序和终端'+'='*20)
     try:
         unpack('./Audio_Chinese.dspck')
         showinfo('DGIL - 提示','语音文件解包成功！')
     except:
         showwarning('DGIL - 警告','找不到文件.')
+        print('语音包下载:\n3.2:[https://autopatchcn.yuanshen.com/client_app/download/pc_zip/20221024103540_fp3L3cHoDpo9eNeT/Audio_Chinese_3.2.0.zip]\n3.1:[https://autopatchcn.yuanshen.com/client_app/download/pc_zip/20220917165328_rVH9t4OWduSD75ye/Audio_Chinese_3.1.0.zip]\n3.0:[https://autopatchcn.yuanshen.com/client_app/download/pc_zip/20220815143702_i3RDKzdbDWGYYfZZ/Audio_Chinese_3.0.0.zip]')
 def dslwelcome():
     dw=showinfo('DGIL - 关于','Darkstar Genshin Impact Launcher '+ver+'\n版权所有。Jeffery Darkstar, 2022')
 def start():
@@ -112,12 +96,12 @@ def start():
         print('GAMING ROUTE GET: '+gamingroute)
         try:
             root.withdraw()
-            print('Game Launch!')
+            print('游戏启动！\n你现在可以关闭这个窗口了......')
             os.system(gamingroute)
         except KeyboardInterrupt:
             root.deiconify()
     except FileNotFoundError:
-        showinfo('DGIL - 启动失败','未检测到指定的游戏文件.\n转到选项一设置')
+        showinfo('DGIL - 启动失败','未检测到指定的游戏文件.\n转到选项——设置来更改此项...')
         root.deiconify()
 menu1 = Menu(starttab, tearoff=0)
 menu1.add_command(label="从特定包安装Genshin Impact",command=decompiled)
@@ -138,8 +122,8 @@ urltext1.pack()
 xVariable = tkinter.StringVar()
 com = ttk.Combobox(downloadtab,textvariable=xVariable)
 com.pack()
-com["value"] = ("Genshin Impact 3.1.0","YuanShen 3.1.0")
-com.current(1)
+com["value"] = ("YuanShen 3.2.0","YuanShen 3.1.0","YuanShen 3.0.0")
+com.current(0)
 def xFunc(event):
     print('Download version chosen:'+xVariable.get())
 com.bind("<<ComboboxSelected>>", xFunc)
@@ -157,78 +141,6 @@ progress.pack()
 getgamebutton = tkinter.Button(downloadtab, text='          获取游戏          ', command=show)
 getgamebutton.pack(pady=5)
 
-widthLabel = tkinter.Label(starttab, text='宽 Width')
-widthLabel.pack()
-width = tkinter.StringVar()
-widthEntry = tkinter.Entry(starttab, show=None, textvariable=width)
-widthEntry.pack()
-width.set(regWidth)
-heightLabel = tkinter.Label(starttab, text='高 Height')
-heightLabel.pack()
-height = tkinter.StringVar()
-heightEntry = tkinter.Entry(starttab, show=None, textvariable=height)
-heightEntry.pack()
-height.set(regHeight)
-flag = tkinter.IntVar()
-fullscreenCheckbutton = tkinter.Checkbutton(
-    starttab, text='全屏显示 FullScreen', variable=flag, onvalue=1, offvalue=0)
-fullscreenCheckbutton.pack()
-flag.set(regFullScreen)
-def main():
-    global regWidth
-    global regHeight
-    global regFullScreen
-    widthNum = width.get()
-    heightNum = height.get()
-    isfullScreen = int(bool(flag.get()))
-    if check(widthNum) and check(heightNum):
-        widthNum = int(widthNum)
-        heightNum = int(heightNum)
-        if not (int(widthNum) <= screenWidth and int(heightNum) <= screenHeight):
-            tkinter.messagebox.showerror(
-                title='Error', message='Width/Height 超出屏幕尺寸.')
-            return
-    else:
-        tkinter.messagebox.showerror(
-            title='Error', message='Width/Height Error.')
-        return
-    msgbox = False
-    if widthNum != regWidth:
-        try:
-            win32api.RegSetValueEx(
-                regeditKey, 'Screenmanager Resolution Width_h182942802', 0, win32con.REG_DWORD, widthNum)
-            regWidth = win32api.RegQueryValueEx(
-                regeditKey, 'Screenmanager Resolution Width_h182942802')[0]
-            msgbox = True
-        except:
-            tkinter.messagebox.showerror(
-                title='Error', message='Regedit I/O Error.')
-            exit(1)
-    if heightNum != regHeight:
-        try:
-            win32api.RegSetValueEx(
-                regeditKey, 'Screenmanager Resolution Height_h2627697771', 0, win32con.REG_DWORD, heightNum)
-            regHeight = win32api.RegQueryValueEx(
-                regeditKey, 'Screenmanager Resolution Height_h2627697771')[0]
-            msgbox = True
-        except:
-            tkinter.messagebox.showerror(
-                title='Error', message='Regedit I/O Error.')
-            exit(1)
-    if isfullScreen != regFullScreen:
-        try:
-            win32api.RegSetValueEx(
-                regeditKey, 'Screenmanager Is Fullscreen mode_h3981298716', 0, win32con.REG_DWORD, isfullScreen)
-            regFullScreen = win32api.RegQueryValueEx(
-                regeditKey, 'Screenmanager Is Fullscreen mode_h3981298716')[0]
-            msgbox = True
-        except:
-            tkinter.messagebox.showerror(
-                title='Error', message='Regedit I/O Error.')
-            exit(1)
-    if msgbox:
-        tkinter.messagebox.showinfo(title='Info', message='Success!')
-
 routelabel=tkinter.Label(setuptab,text='自定义游戏路径：')
 routelabel.pack()
 def getroute():
@@ -237,12 +149,14 @@ def getroute():
     f=open(cwd+'/DGIL.cfg','w')
     f.write(f_path)
     print('data writed')
-routeentry=tkinter.Button(setuptab,text='     点击选择游戏主执行文件     ',command=getroute)
+routeentry=tkinter.Button(setuptab,text='     点击选择游戏主执行文件(YuanShen.exe)     ',command=getroute)
 routeentry.pack()
-speedlabel=tkinter.Label(setuptab,text='最高下载速度限制(B/s)：')
+speedlabel=tkinter.Label(setuptab,text='最高下载速度限制(B/s)：\n启动时的默认值：678700000')
 speedlabel.pack()
-speedscale=tkinter.Scale(setuptab, from_=1024, to=5242880, orient="horizontal", length=700)
+speedscale=tkinter.Scale(setuptab, from_=1024, to=1073741824, orient="horizontal", length=700)
 speedscale.pack()
+speedlabel1=tkinter.Label(setuptab,text='注意：如果你把滑块调到滑轨的85%以上，下载将对你的电脑内存造成不可挽回的伤害。\n除非你安装的是≥16G的内存，或者这个程序在超算上运行。')
+speedlabel1.pack()
 
 def confirmsetup():
     speedlimit=speedscale.get()
@@ -252,7 +166,6 @@ confirmsetupbt=tkinter.Button(setuptab,text='     应用     ',command=confirmse
 confirmsetupbt.pack()
 
 def startall():
-    main()
     start()
 
 startbutton=Button(starttab,text='          启动游戏          ',height='3',command=startall)
